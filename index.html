@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub Repo Manager</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  font-family:Arial,Helvetica,sans-serif;
+  background:#090b0f;
+  color:#fff;
+  min-height:100vh;
+}
+
+button,input,select{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+.hidden{
+  display:none!important;
+}
+
+/* LOGIN */
+
+.login-page{
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:20px;
+}
+
+.login-card{
+  width:100%;
+  max-width:430px;
+  background:#11151b;
+  border:1px solid #272d35;
+  border-radius:18px;
+  padding:30px;
+  box-shadow:0 25px 80px rgba(0,0,0,.45);
+}
+
+.logo{
+  width:60px;
+  height:60px;
+  border-radius:16px;
+  background:#fff;
+  color:#111;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:30px;
+  margin-bottom:22px;
+}
+
+h1{
+  font-size:25px;
+  margin-bottom:9px;
+}
+
+.subtitle{
+  color:#89929d;
+  font-size:14px;
+  line-height:1.6;
+  margin-bottom:25px;
+}
+
+label{
+  display:block;
+  font-size:13px;
+  color:#c7ccd2;
+  margin-bottom:8px;
+}
+
+.input-wrap{
+  position:relative;
+}
+
+input,select{
+  width:100%;
+  height:48px;
+  background:#0b0e12;
+  color:#fff;
+  border:1px solid #2b3139;
+  border-radius:10px;
+  outline:none;
+  padding:0 14px;
+}
+
+input:focus,select:focus{
+  border-color:#69727d;
+}
+
+.login-btn{
+  width:100%;
+  height:48px;
+  margin-top:16px;
+  border:0;
+  border-radius:10px;
+  background:#fff;
+  color:#111;
+  font-weight:bold;
+}
+
+.login-btn:hover{
+  background:#ddd;
+}
+
+.message{
+  display:none;
+  padding:12px;
+  border-radius:9px;
+  margin-top:15px;
+  font-size:13px;
+  line-height:1.5;
+}
+
+.message.show{
+  display:block;
+}
+
+.error{
+  background:#2a1115;
+  border:1px solid #71343d;
+  color:#ff929c;
+}
+
+.success{
+  background:#10251a;
+  border:1px solid #28613c;
+  color:#82dba0;
+}
+
+/* DASHBOARD */
+
+.dashboard{
+  min-height:100vh;
+}
+
+header{
+  height:70px;
+  padding:0 5%;
+  background:#0c0f13;
+  border-bottom:1px solid #222830;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.brand{
+  font-weight:bold;
+  font-size:17px;
+}
+
+.account{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.account img{
+  width:36px;
+  height:36px;
+  border-radius:50%;
+}
+
+.account-name{
+  color:#b9c0c8;
+  font-size:13px;
+}
+
+.logout{
+  background:transparent;
+  color:#a6adb6;
+  border:1px solid #303640;
+  border-radius:8px;
+  padding:8px 12px;
+}
+
+main{
+  width:90%;
+  max-width:1050px;
+  margin:35px auto;
+}
+
+.welcome{
+  margin-bottom:25px;
+}
+
+.welcome h2{
+  font-size:25px;
+  margin-bottom:7px;
+}
+
+.welcome p{
+  color:#858e99;
+  font-size:14px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:20px;
+}
+
+.panel{
+  background:#11151b;
+  border:1px solid #252b33;
+  border-radius:15px;
+  padding:20px;
+}
+
+.panel-title{
+  font-size:15px;
+  margin-bottom:15px;
+}
+
+.repo-info{
+  margin-top:15px;
+  background:#0b0e12;
+  border:1px solid #242a31;
+  border-radius:10px;
+  padding:14px;
+}
+
+.repo-name{
+  font-weight:bold;
+  margin-bottom:6px;
+}
+
+.repo-description{
+  color:#7f8994;
+  font-size:12px;
+  line-height:1.5;
+}
+
+.files{
+  max-height:410px;
+  overflow:auto;
+}
+
+.file{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:12px 8px;
+  border-bottom:1px solid #20252b;
+  font-size:13px;
+}
+
+.file:last-child{
+  border-bottom:0;
+}
+
+.folder{
+  cursor:pointer;
+}
+
+.folder:hover{
+  background:#171c22;
+  border-radius:7px;
+}
+
+.file-icon{
+  width:22px;
+}
+
+.file-path{
+  color:#bfc5cc;
+  word-break:break-all;
+}
+
+.loading{
+  color:#7f8893;
+  font-size:13px;
+  padding:15px 0;
+}
+
+/* DANGER */
+
+.danger{
+  margin-top:20px;
+  background:#160e10;
+  border:1px solid #55272d;
+}
+
+.danger h3{
+  color:#ff858f;
+  margin-bottom:9px;
+}
+
+.danger p{
+  color:#9d7b80;
+  font-size:12px;
+  line-height:1.6;
+  margin-bottom:15px;
+}
+
+.delete-btn{
+  width:100%;
+  height:46px;
+  border:0;
+  border-radius:9px;
+  background:#c73542;
+  color:#fff;
+  font-weight:bold;
+}
+
+.delete-btn:hover{
+  background:#a92d38;
+}
+
+/* MODAL */
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.78);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  z-index:100;
+}
+
+.modal-box{
+  width:100%;
+  max-width:430px;
+  background:#11151b;
+  border:1px solid #363c44;
+  border-radius:16px;
+  padding:25px;
+}
+
+.modal-box h2{
+  color:#ff858f;
+  font-size:19px;
+  margin-bottom:10px;
+}
+
+.modal-box p{
+  color:#9ba3ad;
+  font-size:13px;
+  line-height:1.6;
+  margin-bottom:18px;
+}
+
+.modal-actions{
+  display:flex;
+  gap:10px;
+  margin-top:13px;
+}
+
+.cancel,.confirm{
+  flex:1;
+  height:44px;
+  border-radius:9px;
+  font-weight:bold;
+}
+
+.cancel{
+  background:transparent;
+  color:#b9bec5;
+  border:1px solid #303740;
+}
+
+.confirm{
+  background:#c73542;
+  color:#fff;
+  border:0;
+}
+
+@media(max-width:700px){
+
+  header{
+    padding:0 15px;
+  }
+
+  .brand{
+    display:none;
+  }
+
+  .account-name{
+    display:none;
+  }
+
+  main{
+    width:calc(100% - 30px);
+    margin:25px auto;
+  }
+
+  .grid{
+    grid-template-columns:1fr;
+  }
+
+  .login-card{
+    padding:24px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+
+<section id="loginPage" class="login-page">
+
+  <div class="login-card">
+
+    <div class="logo">◉</div>
+
+    <h1>GitHub Repo Manager</h1>
+
+    <p class="subtitle">
+      Login menggunakan GitHub Personal Access Token
+      untuk mengelola repository kamu.
+    </p>
+
+    <label for="token">GitHub Token</label>
+
+    <div class="input-wrap">
+      <input
+        id="token"
+        type="password"
+        placeholder="github_pat_..."
+        autocomplete="off"
+      >
+    </div>
+
+    <button
+      id="loginButton"
+      class="login-btn"
+      onclick="login()"
+    >
+      Masuk
+    </button>
+
+    <div id="loginMessage" class="message"></div>
+
+  </div>
+
+</section>
+
+
+<!-- DASHBOARD -->
+
+<section id="dashboard" class="dashboard hidden">
+
+<header>
+
+  <div class="brand">
+    GitHub Repo Manager
+  </div>
+
+  <div class="account">
+
+    <img id="avatar" src="" alt="Avatar">
+
+    <span id="accountName" class="account-name"></span>
+
+    <button
+      class="logout"
+      onclick="logout()"
+    >
+      Logout
+    </button>
+
+  </div>
+
+</header>
+
+
+<main>
+
+  <div class="welcome">
+
+    <h2>Repository</h2>
+
+    <p>
+      Pilih repository untuk melihat isi dan mengelolanya.
+    </p>
+
+  </div>
+
+
+  <div class="grid">
+
+    <!-- REPOSITORY -->
+
+    <div class="panel">
+
+      <div class="panel-title">
+        Pilih Repository
+      </div>
+
+      <select
+        id="repoSelect"
+        onchange="selectRepository()"
+      >
+        <option value="">
+          Memuat repository...
+        </option>
+      </select>
+
+      <div
+        id="repoInfo"
+        class="repo-info hidden"
+      >
+
+        <div
+          id="repoName"
+          class="repo-name"
+        ></div>
+
+        <div
+          id="repoDescription"
+          class="repo-description"
+        ></div>
+
+      </div>
+
+    </div>
+
+
+    <!-- FILES -->
+
+    <div class="panel">
+
+      <div class="panel-title">
+        Isi Repository
+      </div>
+
+      <div
+        id="files"
+        class="files"
+      >
+        <div class="loading">
+          Pilih repository terlebih dahulu.
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- DANGER ZONE -->
+
+  <div class="panel danger">
+
+    <h3>⚠ Zona Berbahaya</h3>
+
+    <p>
+      Menghapus seluruh file dalam repository.
+      Repository GitHub tidak akan dihapus.
+      Pastikan repository yang dipilih sudah benar.
+    </p>
+
+    <button
+      class="delete-btn"
+      onclick="openDeleteModal()"
+    >
+      🗑 Hapus Semua Isi Repo
+    </button>
+
+  </div>
+
+</main>
+
+</section>
+
+
+<!-- DELETE MODAL -->
+
+<div
+  id="deleteModal"
+  class="modal hidden"
+>
+
+  <div class="modal-box">
+
+    <h2>⚠ Hapus Semua Isi Repo</h2>
+
+    <p>
+      Semua file di repository
+      <strong id="deleteRepoName"></strong>
+      akan dihapus.
+
+      <br><br>
+
+      Repository tetap ada.
+      Hanya file di dalamnya yang akan dihapus.
+    </p>
+
+    <label>
+      Ketik nama repository:
+    </label>
+
+    <input
+      id="confirmation"
+      type="text"
+      placeholder="Nama repository"
+    >
+
+    <div class="modal-actions">
+
+      <button
+        class="cancel"
+        onclick="closeDeleteModal()"
+      >
+        Batal
+      </button>
+
+      <button
+        class="confirm"
+        onclick="deleteAllFiles()"
+      >
+        Hapus Semua
+      </button>
+
+    </div>
+
+    <div
+      id="deleteMessage"
+      class="message"
+    ></div>
+
+  </div>
+
+</div>
+
+
+<script>
+
+let token = "";
+let user = null;
+let repositories = [];
+let currentRepo = null;
+let currentPath = "";
+
+
+/* GITHUB API */
+
+async function github(url, options = {}){
+
+  const response = await fetch(
+    "https://api.github.com" + url,
+    {
+      ...options,
+      headers:{
+        "Accept":
+          "application/vnd.github+json",
+
+        "X-GitHub-Api-Version":
+          "2022-11-28",
+
+        "Authorization":
+          "Bearer " + token,
+
+        ...(options.headers || {})
+      }
+    }
+  );
+
+  const data =
+    await response.json().catch(() => ({}));
+
+  if(!response.ok){
+
+    throw new Error(
+      data.message ||
+      "GitHub API error"
+    );
+
+  }
+
+  return data;
+}
+
+
+/* MESSAGE */
+
+function showMessage(element,text,type){
+
+  element.textContent = text;
+
+  element.className =
+    "message show " + type;
+}
+
+
+/* LOGIN */
+
+async function login(){
+
+  const input =
+    document.getElementById("token");
+
+  const button =
+    document.getElementById("loginButton");
+
+  const message =
+    document.getElementById("loginMessage");
+
+  const value =
+    input.value.trim();
+
+  if(!value){
+
+    showMessage(
+      message,
+      "Masukkan GitHub Token.",
+      "error"
+    );
+
+    return;
+  }
+
+  button.disabled = true;
+  button.textContent = "Memeriksa token...";
+
+  try{
+
+    token = value;
+
+    user =
+      await github("/user");
+
+    document.getElementById(
+      "avatar"
+    ).src =
+      user.avatar_url;
+
+    document.getElementById(
+      "accountName"
+    ).textContent =
+      user.name
+      ? `${user.name} (@${user.login})`
+      : `@${user.login}`;
+
+    document
+      .getElementById("loginPage")
+      .classList.add("hidden");
+
+    document
+      .getElementById("dashboard")
+      .classList.remove("hidden");
+
+    await loadRepositories();
+
+  }catch(error){
+
+    token = "";
+
+    showMessage(
+      message,
+      error.message ||
+      "Token tidak valid.",
+      "error"
+    );
+
+  }finally{
+
+    button.disabled = false;
+    button.textContent = "Masuk";
+
+  }
+}
+
+
+/* REPOSITORIES */
+
+async function loadRepositories(){
+
+  const select =
+    document.getElementById("repoSelect");
+
+  select.innerHTML =
+    "<option>Memuat...</option>";
+
+  try{
+
+    /*
+     * Mengambil repository milik user.
+     */
+
+    repositories =
+      await github(
+        "/user/repos?per_page=100&sort=updated"
+      );
+
+    select.innerHTML =
+      '<option value="">Pilih repository</option>';
+
+    repositories.forEach(
+      (repo,index)=>{
+
+        const option =
+          document.createElement("option");
+
+        option.value = index;
+
+        option.textContent =
+          repo.name +
+          (repo.private ? " 🔒" : "");
+
+        select.appendChild(option);
+
+      }
+    );
+
+  }catch(error){
+
+    select.innerHTML =
+      "<option>Gagal memuat repository</option>";
+
+    alert(error.message);
+
+  }
+}
+
+
+/* SELECT REPOSITORY */
+
+async function selectRepository(){
+
+  const index =
+    document.getElementById(
+      "repoSelect"
+    ).value;
+
+  const info =
+    document.getElementById(
+      "repoInfo"
+    );
+
+  if(index === ""){
+
+    currentRepo = null;
+
+    info.classList.add("hidden");
+
+    document.getElementById(
+      "files"
+    ).innerHTML =
+      '<div class="loading">Pilih repository terlebih dahulu.</div>';
+
+    return;
+  }
+
+  currentRepo =
+    repositories[index];
+
+  currentPath = "";
+
+  document.getElementById(
+    "repoName"
+  ).textContent =
+    currentRepo.full_name;
+
+  document.getElementById(
+    "repoDescription"
+  ).textContent =
+    currentRepo.description ||
+    "Tidak ada deskripsi.";
+
+  info.classList.remove("hidden");
+
+  await loadFiles("");
+
+}
+
+
+/* LOAD FILES */
+
+async function loadFiles(path){
+
+  if(!currentRepo) return;
+
+  currentPath = path;
+
+  const filesBox =
+    document.getElementById("files");
+
+  filesBox.innerHTML =
+    '<div class="loading">Memuat file...</div>';
+
+  try{
+
+    let url =
+      `/repos/${encodeURIComponent(
+        currentRepo.owner.login
+      )}/${encodeURIComponent(
+        currentRepo.name
+      )}/contents`;
+
+    if(path){
+
+      url += "/" +
+        path
+        .split("/")
+        .map(encodeURIComponent)
+        .join("/");
+
+    }
+
+    const data =
+      await github(url);
+
+    const files =
+      Array.isArray(data)
+      ? data
+      : [data];
+
+    renderFiles(files,path);
+
+  }catch(error){
+
+    filesBox.innerHTML =
+      `<div class="loading">
+        ${escapeHtml(error.message)}
+      </div>`;
+
+  }
+}
+
+
+/* RENDER FILES */
+
+function renderFiles(files,path){
+
+  const filesBox =
+    document.getElementById("files");
+
+  filesBox.innerHTML = "";
+
+
+  if(path){
+
+    const back =
+      document.createElement("div");
+
+    back.className =
+      "file folder";
+
+    back.innerHTML =
+      '<span class="file-icon">↩</span>' +
+      '<span class="file-path">.. Kembali</span>';
+
+    back.onclick = ()=>{
+
+      const parts =
+        path.split("/");
+
+      parts.pop();
+
+      loadFiles(
+        parts.join("/")
+      );
+
+    };
+
+    filesBox.appendChild(back);
+  }
+
+
+  files.forEach(file=>{
+
+    const item =
+      document.createElement("div");
+
+    item.className =
+      "file";
+
+
+    if(file.type === "dir"){
+
+      item.classList.add("folder");
+
+      item.innerHTML =
+        `<span class="file-icon">📁</span>
+         <span class="file-path">
+           ${escapeHtml(file.name)}
+         </span>`;
+
+      item.onclick = ()=>{
+        loadFiles(file.path);
+      };
+
+    }else{
+
+      item.innerHTML =
+        `<span class="file-icon">📄</span>
+         <span class="file-path">
+           ${escapeHtml(file.name)}
+         </span>`;
+
+    }
+
+    filesBox.appendChild(item);
+
+  });
+
+
+  if(files.length === 0){
+
+    filesBox.innerHTML =
+      '<div class="loading">Folder kosong.</div>';
+
+  }
+}
+
+
+/* DELETE MODAL */
+
+function openDeleteModal(){
+
+  if(!currentRepo){
+
+    alert(
+      "Pilih repository terlebih dahulu."
+    );
+
+    return;
+  }
+
+  document.getElementById(
+    "deleteRepoName"
+  ).textContent =
+    currentRepo.name;
+
+  document.getElementById(
+    "confirmation"
+  ).value = "";
+
+  document.getElementById(
+    "deleteMessage"
+  ).className =
+    "message";
+
+  document
+    .getElementById("deleteModal")
+    .classList.remove("hidden");
+}
+
+
+function closeDeleteModal(){
+
+  document
+    .getElementById("deleteModal")
+    .classList.add("hidden");
+
+}
+
+
+/* DELETE ALL FILES */
+
+async function deleteAllFiles(){
+
+  if(!currentRepo) return;
+
+  const confirmation =
+    document.getElementById(
+      "confirmation"
+    ).value.trim();
+
+  const message =
+    document.getElementById(
+      "deleteMessage"
+    );
+
+
+  if(
+    confirmation !==
+    currentRepo.name
+  ){
+
+    showMessage(
+      message,
+      "Nama repository tidak cocok.",
+      "error"
+    );
+
+    return;
+  }
+
+
+  /*
+   * Konfirmasi kedua
+   */
+
+  const sure =
+    confirm(
+      `Yakin ingin menghapus seluruh isi "${currentRepo.name}"?`
+    );
+
+  if(!sure) return;
+
+
+  showMessage(
+    message,
+    "Mengambil daftar file...",
+    "success"
+  );
+
+
+  try{
+
+    /*
+     * Ambil branch utama.
+     */
+
+    const branch =
+      currentRepo.default_branch;
+
+
+    /*
+     * Ambil Git Tree secara recursive.
+     */
+
+    const tree =
+      await github(
+        `/repos/${encodeURIComponent(
+          currentRepo.owner.login
+        )}/${encodeURIComponent(
+          currentRepo.name
+        )}/git/trees/${encodeURIComponent(
+          branch
+        )}?recursive=1`
+      );
+
+
+    const files =
+      (tree.tree || [])
+      .filter(
+        item =>
+          item.type === "blob"
+      );
+
+
+    if(files.length === 0){
+
+      showMessage(
+        message,
+        "Repository sudah kosong.",
+        "success"
+      );
+
+      return;
+    }
+
+
+    /*
+     * GitHub API membutuhkan SHA
+     * setiap file untuk DELETE.
+     */
+
+    let deleted = 0;
+
+
+    for(
+      const file of files
+    ){
+
+      try{
+
+        showMessage(
+          message,
+          `Menghapus ${deleted + 1} dari ${files.length} file...`,
+          "success"
+        );
+
+
+        await github(
+          `/repos/${encodeURIComponent(
+            currentRepo.owner.login
+          )}/${encodeURIComponent(
+            currentRepo.name
+          )}/contents/${file.path
+            .split("/")
+            .map(encodeURIComponent)
+            .join("/")}`,
+          {
+            method:"DELETE",
+
+            headers:{
+              "Content-Type":
+                "application/json"
+            },
+
+            body:JSON.stringify({
+
+              message:
+                `Delete ${file.path}`,
+
+              sha:
+                file.sha,
+
+              branch:
+                branch
+
+            })
+
+          }
+        );
+
+
+        deleted++;
+
+      }catch(error){
+
+        console.error(
+          "Gagal menghapus:",
+          file.path,
+          error
+        );
+
+      }
+
+    }
+
+
+    showMessage(
+      message,
+      `Selesai. ${deleted} dari ${files.length} file berhasil diproses.`,
+      "success"
+    );
+
+
+    setTimeout(
+      ()=>{
+        closeDeleteModal();
+        loadFiles("");
+      },
+      1800
+    );
+
+
+  }catch(error){
+
+    showMessage(
+      message,
+      error.message ||
+      "Gagal menghapus isi repository.",
+      "error"
+    );
+
+  }
+}
+
+
+/* LOGOUT */
+
+function logout(){
+
+  token = "";
+  user = null;
+  repositories = [];
+  currentRepo = null;
+
+  document.getElementById(
+    "token"
+  ).value = "";
+
+  document
+    .getElementById("dashboard")
+    .classList.add("hidden");
+
+  document
+    .getElementById("loginPage")
+    .classList.remove("hidden");
+
+}
+
+
+/* ESCAPE HTML */
+
+function escapeHtml(text){
+
+  const div =
+    document.createElement("div");
+
+  div.textContent =
+    text;
+
+  return div.innerHTML;
+
+}
+
+
+/* ENTER LOGIN */
+
+document
+  .getElementById("token")
+  .addEventListener(
+    "keydown",
+    event=>{
+
+      if(event.key === "Enter"){
+        login();
+      }
+
+    }
+  );
+
+</script>
+
+</body>
+</html>
